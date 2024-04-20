@@ -6,7 +6,10 @@ const service = require('../../services/purchase/purchase_services')
 //http://localhost:3000/api/purchase/addpurchase/
 
 router.post('/addpurchase',async(req,res)=>{
-    await service.addpuchase(req.body)
+    if (!req.body.purchase_date) {
+        return res.status(502).send({ error: "purchase_date Required" });
+    }
+    await service.addpurchase(req.body)
    res.status(201).send('created successfully')
 })
 module.exports = router;

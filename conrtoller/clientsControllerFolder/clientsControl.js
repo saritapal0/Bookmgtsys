@@ -44,6 +44,25 @@ router.get('/getclient/:client_id',async(req,res)=>{
 //http://localhost:3000/api/clients/addclient/
 
 router.post('/addclient',varifyToken,async(req,res)=>{
+  if (!req.body.client_id ) {
+    return res.status(502).send({ error: "client_id  Required" });
+}
+if (!req.body.client_name) {
+    return res.status(502).send({ error: "client_name Required" });
+}
+
+if (!req.body.email) {
+    return res.status(502).send({ error: "emai Required" });
+}
+if (!req.body.phone_number) {
+   return res.status(502).send({ error: "phone_number Required" });
+}
+if (!req.body.address) {
+    return res.status(502).send({ error: "address Required" });
+}
+if (!req.body.city) {
+ return res.status(502).send({ error: "city Required" });
+}
      await service.addclient(req.body)
     res.status(201).send('created successfully')
 })
@@ -52,6 +71,25 @@ router.post('/addclient',varifyToken,async(req,res)=>{
 //http://localhost:3000/api/clients/updateclient/client_id
 
 router.put('/updateclient/:client_id',async(req,res)=>{
+  if (!req.body.client_id ) {
+    return res.status(502).send({ error: "client_id  Required" });
+}
+if (!req.body.client_name) {
+    return res.status(502).send({ error: "client_name Required" });
+}
+
+if (!req.body.email) {
+    return res.status(502).send({ error: "emai Required" });
+}
+if (!req.body.phone_number) {
+   return res.status(502).send({ error: "phone_number Required" });
+}
+if (!req.body.address) {
+    return res.status(502).send({ error: "address Required" });
+}
+if (!req.body.city) {
+ return res.status(502).send({ error: "city Required" });
+}
    const affectedRows = await service.updateclient(req.body,req.params.client_id)
    if(affectedRows == 0)
    res.status(404).json('no record id:'+req.params.id)
