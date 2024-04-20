@@ -1,27 +1,30 @@
 const express = require('express');
 const router = express.Router();
 const jwt = require("jsonwebtoken");
+
 const service = require('../../services/clients/clients_services')
 
 
 
 //jwt tokens authentication
 function varifyToken(req, res, next) {
-   const token = req.headers["authorization"];
+   let token = req.headers["authorization"];
+    token = token.split("")[1];
    console.log("middleware", token);
-   if (token) {
-     let token = token.split("")[1];
-     jwt.verify(token, jwt, (err, valid) => {
-       if (err) {
-         res.status(401).send({ result: "plz provide valid token" });
-       } else {
-         next();
-       }
-     });
-   } else {
-     res.status(403).send({ result: "plz add token with header" });
-   }
- }
+   
+     if(token == null){
+      return res.sendStatus(401);
+    }else{
+      jwt.verify(token,process.env.TOKEN,(err,res)=>{
+        if(err){
+          return res.sendStatus(403)
+          res.clients = client_id;
+      }
+      next();
+      })
+      }
+    }
+ 
 //Retrieve a list of all clients.
 //http://localhost:3000/api/clients/getAllclients/
 
