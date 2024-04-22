@@ -8,9 +8,9 @@ const ResponseManager = require('../../response/responseManager');
 
 router.post('/addpurchase',async(req,res)=>{
     if (!req.body.purchase_date) {
-        return res.status(502).send({ error: "purchase_date Required" });
+        return ResponseManager.statusError(502).sendError({ error: "purchase_date Required" });
     }
     await service.addpurchase(req.body)
-   ResponseManager.statusError(201).sendSuccess('created successfully')
+   ResponseManager.statusError(201).sendSuccess(res,'created successfully')
 })
 module.exports = router;

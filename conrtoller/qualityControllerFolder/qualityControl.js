@@ -18,7 +18,7 @@ router.get('/getquality/:QualityID',async(req,res)=>{
     const quality = await service.getqualityById(req.params.QualityID)
     if(quality.length == 0)
     ResponseManager.statusError(404).json('no record id:'+req.params.id)
-    ResponseManager.sendSuccess(quality)
+    ResponseManager.sendSuccess(res,quality)
    })
 
  //Add a new quality option to the database  
@@ -26,7 +26,7 @@ router.get('/getquality/:QualityID',async(req,res)=>{
 
 router.post('/addquality',async(req,res)=>{
   if (!req.body.QualityName) {
-    return ResponseManager.statusError(502).send({ error: "QualityName Required" });
+    return ResponseManager.statusError(502).sendError({ error: "QualityName Required" });
 }
      await service.addquality(req.body)
     ResponseManager.statusError(201).sendSuccess('created successfully')
@@ -38,13 +38,13 @@ router.post('/addquality',async(req,res)=>{
 router.put('/updatequality/:QualityID',async(req,res)=>{
   
   if (!req.body.QualityName) {
-    return res.status(502).send({ error: "QualityName Required" });
+    return ResponseManager.status(502).sendError({ error: "QualityName Required" });
 }
    const affectedRows = await service.updatequality(req.body,req.params.QualityID)
    if(affectedRows == 0)
-   res.status(404).json('no record id:'+req.params.id)
+   ResponseManager.statusError(404).json('no record id:'+req.params.id)
    else
-   res.send('updated successful')
+   ResponseManager.sendSuccess('updated successful')
 
 })
 
@@ -54,7 +54,7 @@ router.put('/updatequality/:QualityID',async(req,res)=>{
 router.delete('/deletequality/:QualityID',async(req,res)=>{
     const affectedRows = await service.deletequality(req.params.QualityID)
     if(affectedRows == 0)
-    res.status(404).json('no record id:'+req.params.id)
-    res.send('delete successful')
+    ResponseManager.statusError(404).json('no record id:'+req.params.id)
+    ResponseManager.sendSuccess('delete successful')
    })
 module.exports = router;

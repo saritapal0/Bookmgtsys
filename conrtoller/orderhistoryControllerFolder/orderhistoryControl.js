@@ -15,7 +15,7 @@ router.get('/getorderhistory:client_id',async(req,res)=>{
 //http://localhost:3000/api/orderhistory/getorderhistory/order_id
 
 router.get('/getorderhistory/:order_id',async(req,res)=>{
-    const orderhistory = await service.getorderhistory(req.params.order_id)
+    const orderhistory = await service.getorderhistoryById(req.params.order_id)
     if(orderhistory.length == 0) ResponseManager.statusError(404).json('no record id:'+req.params.id)
     ResponseManager.sendSuccess(res,orderhistory)
    })

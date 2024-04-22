@@ -19,7 +19,7 @@ router.get('/getcart/:cart_id',async(req,res)=>{
 router.post('/addcart',async(req,res)=>{
      await service.addcart(req.body)
     ResponseManager.statusError(201)
-    ResponseManager.sendSuccess('created successfully')
+    ResponseManager.sendSuccess(res,'created successfully')
 })
 
 //http://localhost:3000/api/carts/removecart/

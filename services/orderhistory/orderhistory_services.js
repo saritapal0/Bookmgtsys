@@ -6,7 +6,7 @@ module.exports.getorderhistoryByClientID = async(id)=> {
 return rows;
 }
 
-module.exports.getoredrhistoryById=async(id)=> {
+module.exports.getorderhistoryById=async(id)=> {
     const [rows] = await db.query('SELECT * FROM orderhistory WHERE order_id = ?',[id])
     return rows;
 }
