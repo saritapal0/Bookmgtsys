@@ -1,13 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const service = require('../../services/booktypes/booktypeservice')
+const service = require('../../services/booktypes/booktypeservice');
+const ResponseManager = require('../../response/responseManager');
 
 //Retrieve a list of all book types.
 //http://localhost:3000/api/booktypes/getAllbooktypes
 
 router.get('/getAllbooktypes',async(req,res)=>{
   const booktypes = await service.getAllbooktype()
-  res.send(booktypes)
+  ResponseManager.sendSuccess(res,booktypes)
 })
 
 //Retrieve details of a specific book type by ID.
@@ -16,34 +17,35 @@ router.get('/getAllbooktypes',async(req,res)=>{
 router.get('/getbooktypes/:typeID',async(req,res)=>{
     const booktypes = await service.getbooktypesById(req.params.typeID)
     if(booktypes.length == 0)
-    res.status(404).json('no record id:'+req.params.id)
-    res.send(booktypes)
+    ResponseManager.statusError(404).json('no record id:'+req.params.id)
+    ResponseManager.sendSuccess(res,booktypes)
+    
    })
 
  // Add a new book type to the database.
 //http://localhost:3000/api/booktypes/addbooktype/
 
 router.post('/addbooktype',async(req,res)=>{
-  if (!req.body.TypenName) {
-    return res.status(502).send({ error: "TypenName Required" });
+  if (!req.body.TypeName) {
+    return ResponseManager.statusError(502).sendError({ error: "TypeName Required" });
 }
      await service.addbooktype(req.body)
-    res.status(201).send('created successfully')
+    ResponseManager.statusError(201).sendSuccess(res,'created successfully')
 })
 
 
 //Update details of a specific book type by ID.
-//http://localhost:3000/api/booktypes/updatebooktype/typeID
+//http://localhost:3000/api/booktypes/updatebooktype/TypeID
 
 router.put('/updatebooktype/:TypeID',async(req,res)=>{
     if (!req.body.TypeName) {
-    return res.status(502).send({ error: "TypeName Required" });
+    return ResponseManager.statusError(502).sendError({ error: "TypeName Required" });
 }
    const affectedRows = await service.updatebooktype(req.body,req.params.TypeID)
    if(affectedRows == 0)
-   res.status(404).json('no record id:'+req.params.id)
+   ResponseManager.statusError(404).json('no record id:'+req.params.id)
    else
-   res.send('updated successful')
+   ResponseManager.sendSuccess(res,'updated successful')
 
 })
 
@@ -53,7 +55,7 @@ router.put('/updatebooktype/:TypeID',async(req,res)=>{
 router.delete('/deletebooktype/:TypeID',async(req,res)=>{
     const affectedRows = await service.deletebooktype(req.params.TypeID)
     if(affectedRows == 0)
-    res.status(404).json('no record id:'+req.params.id)
-    res.send('delete successful')
+    ResponseManager.statusError(404).json('no record id:'+req.params.id)
+    ResponseManager.sendSuccess(res,'delete successful')
    })
 module.exports = router;

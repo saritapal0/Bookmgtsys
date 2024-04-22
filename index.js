@@ -3,6 +3,7 @@ const app = express();
 const db = require('./db');
 const bodyparser = require("body-parser");
 require('express-async-errors')
+const ResponseManager = require('./response/responseManager')
 bookRoutes = require('./conrtoller/booksControllerfolder/booksControl')
 clientRoutes = require('./conrtoller/clientsControllerFolder/clientsControl')
 booktypeRoutes = require('./conrtoller/booktypesControllerFolder/booktypesControl')
@@ -24,10 +25,13 @@ app.use('/api/carts',cartsRoutes)
 app.use('/api/orderhistory',orderhistoryRoutes)
 
 //Global handler
-app.use((err,res,req,next)=>{
-   console.log(err)
-   res.status[err.status || 500].send('something went wrong')
-})
+app.all("*", (req, res) => {
+  ResponseManager.sendError(res, 404, "", "Yes", "Page Not Found");
+});
+// app.use((err,res,req,next)=>{
+//    console.log(err)
+//    res.status[err.status || 500].send('something went wrong')
+// })
 
 db.query("SELECT 1")
 .then(()=>{

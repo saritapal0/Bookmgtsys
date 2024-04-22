@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const jwt = require("jsonwebtoken");
-const service = require('../../services/clients/clients_services')
+const service = require('../../services/clients/clients_services');
+const ResponseManager = require('../../response/responseManager');
 
 
 
@@ -27,7 +28,7 @@ function varifyToken(req, res, next) {
 
 router.get('/getAllclients',async(req,res)=>{
   const clients = await service.getAllclients()
-  res.send(clients)
+  ResponseManager.sendSuccess(res,clients)
 })
 
 //Retrieve details of a specific client by ID.
@@ -36,8 +37,8 @@ router.get('/getAllclients',async(req,res)=>{
 router.get('/getclient/:client_id',async(req,res)=>{
     const clients = await service.getclientById(req.params.client_id)
     if(clients.length == 0)
-    res.status(404).json('no record id:'+req.params.client_id)
-    res.send(clients)
+  ResponseManager.statusError(404).json('no record id:'+req.params.client_id)
+  ResponseManager.sendSuccess(res,clients)
    })
 
 //Add a new client to the database.

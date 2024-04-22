@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const service = require('../../services/carts/carts_sevices')
+const service = require('../../services/carts/carts_sevices');
+const ResponseManager = require('../../response/responseManager');
 
 
 //Retrieve the current contents of the client's cart
@@ -9,15 +10,16 @@ const service = require('../../services/carts/carts_sevices')
 router.get('/getcart/:cart_id',async(req,res)=>{
     const carts = await service.getcartById(req.params.cart_id)
     if(carts.length == 0)
-    res.status(404).json('no record id:'+req.params.cart_id)
-    res.send(carts)
+    ResponseManager.statusError(404).json('no record id:'+req.params.cart_id)
+    ResponseManager.sendSuccess(res,carts)
    })
 
 //http://localhost:3000/api/carts/addcart/
 
 router.post('/addcart',async(req,res)=>{
      await service.addcart(req.body)
-    res.status(201).send('created successfully')
+    ResponseManager.statusError(201)
+    ResponseManager.sendSuccess('created successfully')
 })
 
 //http://localhost:3000/api/carts/removecart/

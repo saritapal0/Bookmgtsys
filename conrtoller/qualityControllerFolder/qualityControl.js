@@ -1,13 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const service = require('../../services/quality/quality_services')
+const service = require('../../services/quality/quality_services');
+const ResponseManager = require('../../response/responseManager');
 
 //Retrieve a list of all quality options.
 //http://localhost:3000/api/quality/getAllquality/
 
 router.get('/getAllquality',async(req,res)=>{
   const quality = await service.getAllquality()
-  res.send(quality)
+  ResponseManager.sendSuccess(res,quality)
 })
 
 //Retrieve details of a specific quality option by ID.
@@ -16,8 +17,8 @@ router.get('/getAllquality',async(req,res)=>{
 router.get('/getquality/:QualityID',async(req,res)=>{
     const quality = await service.getqualityById(req.params.QualityID)
     if(quality.length == 0)
-    res.status(404).json('no record id:'+req.params.id)
-    res.send(quality)
+    ResponseManager.statusError(404).json('no record id:'+req.params.id)
+    ResponseManager.sendSuccess(quality)
    })
 
  //Add a new quality option to the database  
@@ -25,10 +26,10 @@ router.get('/getquality/:QualityID',async(req,res)=>{
 
 router.post('/addquality',async(req,res)=>{
   if (!req.body.QualityName) {
-    return res.status(502).send({ error: "QualityName Required" });
+    return ResponseManager.statusError(502).send({ error: "QualityName Required" });
 }
      await service.addquality(req.body)
-    res.status(201).send('created successfully')
+    ResponseManager.statusError(201).sendSuccess('created successfully')
 })
 
 ////Update details of a specific quality option by ID.
