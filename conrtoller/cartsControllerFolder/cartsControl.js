@@ -9,8 +9,6 @@ const ResponseManager = require('../../response/responseManager');
 
 router.get('/getcart/:cart_id',async(req,res)=>{
     const carts = await service.getcartById(req.params.cart_id)
-    if(carts.length == 0)
-    ResponseManager.statusError(404).json('no record id:'+req.params.cart_id)
     ResponseManager.sendSuccess(res,carts)
    })
 

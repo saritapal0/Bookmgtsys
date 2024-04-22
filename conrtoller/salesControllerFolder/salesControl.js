@@ -11,9 +11,11 @@ router.post('/addsale',async(req,res)=>{
         return ResponseManager.statusError(502).sendError({ error: "sale_date Required" });
     }
     if (!req.body.sale_price) {
-        return ResponseManager.statusError({ error: "sale_price Required" });
+        return ResponseManager.statusError(502).sendError({ error: "sale_price Required" });
     }
-    await service.addsale(req.body)
-   ResponseManager.statusError(201).sendSuccess('created successfully')
+    const affectedRows = await service.addsale(req.body)
+if (affectedRows == 0) ResponseManager.statusError(404).json("no record id:" + req.params.id);
+else 
+ResponseManager.sendSuccess(res,"created successful");
 })
 module.exports = router;

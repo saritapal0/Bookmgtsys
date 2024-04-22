@@ -27,9 +27,12 @@ router.get('/getquality/:QualityID',async(req,res)=>{
 router.post('/addquality',async(req,res)=>{
   if (!req.body.QualityName) {
     return ResponseManager.statusError(502).sendError({ error: "QualityName Required" });
-}
-     await service.addquality(req.body)
-    ResponseManager.statusError(201).sendSuccess('created successfully')
+} 
+const affectedRows = await service.addquality(req.body)
+   if(affectedRows == 0)
+   ResponseManager.statusError(404).json('no record id:'+req.params.id)
+   else
+   ResponseManager.sendSuccess(res,'created successful')
 })
 
 ////Update details of a specific quality option by ID.
@@ -38,13 +41,13 @@ router.post('/addquality',async(req,res)=>{
 router.put('/updatequality/:QualityID',async(req,res)=>{
   
   if (!req.body.QualityName) {
-    return ResponseManager.status(502).sendError({ error: "QualityName Required" });
+    return ResponseManager.statusError(502).sendError({ error: "QualityName Required" });
 }
    const affectedRows = await service.updatequality(req.body,req.params.QualityID)
    if(affectedRows == 0)
    ResponseManager.statusError(404).json('no record id:'+req.params.id)
    else
-   ResponseManager.sendSuccess('updated successful')
+   ResponseManager.sendSuccess(res,'updated successful')
 
 })
 
@@ -55,6 +58,6 @@ router.delete('/deletequality/:QualityID',async(req,res)=>{
     const affectedRows = await service.deletequality(req.params.QualityID)
     if(affectedRows == 0)
     ResponseManager.statusError(404).json('no record id:'+req.params.id)
-    ResponseManager.sendSuccess('delete successful')
+    ResponseManager.sendSuccess(res,'delete successful')
    })
 module.exports = router;

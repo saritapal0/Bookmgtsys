@@ -10,7 +10,9 @@ router.post('/addpurchase',async(req,res)=>{
     if (!req.body.purchase_date) {
         return ResponseManager.statusError(502).sendError({ error: "purchase_date Required" });
     }
-    await service.addpurchase(req.body)
-   ResponseManager.statusError(201).sendSuccess(res,'created successfully')
+    const affectedRows = await service.addpurchase(req.body)
+    if (affectedRows == 0) ResponseManager.statusError(404).json("no record id:" + req.params.id);
+    else 
+    ResponseManager.sendSuccess(res,"created successful");
 })
 module.exports = router;

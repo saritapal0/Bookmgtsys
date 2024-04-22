@@ -26,7 +26,7 @@ router.get("/getbook/:book_id", async (req,res) => {
 //http://localhost:3000/api/books/addbook/
 
 router.post("/addbook", async (req, res) => {
- if (!req.body.book_name) {
+ if (!req.body.book_name){
       return ResponseManager.statusError(502).sendError({ error: "book_name Required" });
   }
   if (!req.body.booktype) {
@@ -47,14 +47,15 @@ router.post("/addbook", async (req, res) => {
 if (!req.body.price) {
    return ResponseManager.statusError(502).sendError({ error: "price Required" });
 }
-     await service.addbook(req.body)
-    ResponseManager.statusError(200).sendSuccess(res,"created successfully");
+ const affectedRows = await service.addbook(req.body)
+ if (affectedRows == 0) ResponseManager.statusError(404).json("no record id:" + req.params.id);
+ else ResponseManager.sendSuccess(res,"created successful");
 });
 
 //Update details of a specific book by ID.
 //http://localhost:3000/api/books/updatebook/book_id
 
-router.put("/updatebook/:book_id", async (req, res) => {
+router.put("/updatebook/:book_id", async (req,res) => {
    if (!req.body.book_name) {
       return ResponseManager.statusError(502).sendError({ error: "book_name Required" });
   }
@@ -76,7 +77,7 @@ router.put("/updatebook/:book_id", async (req, res) => {
 if (!req.body.price) {
    return ResponseManager.statusError(502).sendError({ error: "price Required" });
 }
- const affectedRows = await service.updatebook(req.body, req.params.book_id);
+ const affectedRows = await service.updatebook(req.body,req.params.book_id);
   if (affectedRows == 0) ResponseManager.statusError(404).json("no record id:" + req.params.id);
   else ResponseManager.sendSuccess(res,"updated successful");
 });

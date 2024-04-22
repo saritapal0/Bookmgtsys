@@ -50,32 +50,32 @@ if (!req.body.client_name) {
     return ResponseManager.statusError(502).sendError({ error: "client_name Required" });
 }
 if (!req.body.email) {
-    return ResponseManager.status(502).sendError({ error: "emai Required" });
+    return ResponseManager.statusError(502).sendError({ error: "emai Required" });
 }
 if (!req.body.phone_number) {
-   return ResponseManager.status(502).sendError({ error: "phone_number Required" });
+   return ResponseManager.statusError(502).sendError({ error: "phone_number Required" });
 }
 if (!req.body.address) {
-    return ResponseManager.status(502).sendError({ error: "address Required" });
+    return ResponseManager.statusError(502).sendError({ error: "address Required" });
 }
 if (!req.body.city) {
- return ResponseManager.status(502).sendError({ error: "city Required" });
+ return ResponseManager.statusError(502).sendError({ error: "city Required" });
 }
-     await service.addclient(req.body)
-    ResponseManager.status(201).send(res,'created successfully')
+   const affectedRows = await service.addclient(req.body)
+   if(affectedRows == 0)
+   ResponseManager.statusError(404).json('no record id:'+req.params.id)
+   else
+   ResponseManager.sendSuccess(res,'created successful')
 })
 
 //Update details of a specific client by ID.
 //http://localhost:3000/api/clients/updateclient/client_id
 
 router.put('/updateclient/:client_id',async(req,res)=>{
-   if (!req.body.client_id ) {
-    return ResponseManager.statusError(502).sendError({ error: "client_id  Required" });
-}
+  
 if (!req.body.client_name) {
     return ResponseManager.statusError(502).sendError({ error: "client_name Required" });
 }
-
 if (!req.body.email) {
     return ResponseManager.statusError(502).sendError({ error: "emai Required" });
 }
@@ -90,10 +90,9 @@ if (!req.body.city) {
 }
    const affectedRows = await service.updateclient(req.body,req.params.client_id)
    if(affectedRows == 0)
-   ResponseManager.status(404).json('no record id:'+req.params.id)
+   ResponseManager.statusError(404).json('no record id:'+req.params.id)
    else
-   ResponseManager.send(res,'updated successful')
-
+   ResponseManager.sendSuccess(res,'updated successful')
 })
 
 //Delete a client from the database.
@@ -101,8 +100,8 @@ if (!req.body.city) {
 
 router.delete('/deleteclient/:client_id',async(req,res)=>{
     const affectedRows = await service.deleteclient(req.params.client_id)
-    if(affectedRows == 0)
-    ResponseManager.status(404).json('no record id:'+req.params.id)
-    ResponseManager.send('delete successful')
+    if(affectedRows == 0)ResponseManager.statusError(404).json("no record id:" + req.params.id);
+  ResponseManager.sendSuccess(res,"delete successful");
+
    })
 module.exports = router;
