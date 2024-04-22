@@ -1,30 +1,27 @@
 const express = require('express');
 const router = express.Router();
 const jwt = require("jsonwebtoken");
-
 const service = require('../../services/clients/clients_services')
 
 
 
 //jwt tokens authentication
 function varifyToken(req, res, next) {
-   let token = req.headers["authorization"];
-    token = token.split("")[1];
+   const token = req.headers["authorization"];
    console.log("middleware", token);
-   
-     if(token == null){
-      return res.sendStatus(401);
-    }else{
-      jwt.verify(token,process.env.TOKEN,(err,res)=>{
-        if(err){
-          return res.sendStatus(403)
-          res.clients = client_id;
-      }
-      next();
-      })
-      }
-    }
- 
+   if (token) {
+     let token = token.split("")[1];
+     jwt.verify(token, jwt, (err, valid) => {
+       if (err) {
+         res.status(401).send({ result: "plz provide valid token" });
+       } else {
+         next();
+       }
+     });
+   } else {
+     res.status(403).send({ result: "plz add token with header" });
+   }
+ }
 //Retrieve a list of all clients.
 //http://localhost:3000/api/clients/getAllclients/
 
@@ -47,9 +44,7 @@ router.get('/getclient/:client_id',async(req,res)=>{
 //http://localhost:3000/api/clients/addclient/
 
 router.post('/addclient',varifyToken,async(req,res)=>{
-  if (!req.body.client_id ) {
-    return res.status(502).send({ error: "client_id  Required" });
-}
+ 
 if (!req.body.client_name) {
     return res.status(502).send({ error: "client_name Required" });
 }
@@ -74,7 +69,7 @@ if (!req.body.city) {
 //http://localhost:3000/api/clients/updateclient/client_id
 
 router.put('/updateclient/:client_id',async(req,res)=>{
-  if (!req.body.client_id ) {
+   if (!req.body.client_id ) {
     return res.status(502).send({ error: "client_id  Required" });
 }
 if (!req.body.client_name) {

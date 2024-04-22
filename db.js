@@ -6,5 +6,5 @@ const mysql = require("mysql2/promise");
     password:"",
     database:"bookmanagesys"
 });
-module.exports=mysqlPool;
+module.exports = mysqlPool;
 
