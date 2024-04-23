@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const jwt = require("jsonwebtoken");
+const secretkey = "secretkey"
 const service = require('../../services/clients/clients_services');
 const ResponseManager = require('../../response/responseManager');
 
