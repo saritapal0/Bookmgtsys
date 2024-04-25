@@ -1,37 +1,25 @@
 const express = require('express');
 const router = express.Router();
-const service = require('../../services/carts/carts_sevices');
-const ResponseManager = require('../../response/responseManager');
+const cloudinary = require('../../Cloud/cloudinary')
+const service = require("../../services/carts/carts_sevices")
 
 
-//Retrieve the current contents of the client's cart
-//http://localhost:3000/api/carts/getcart/cart_id
+router.post('/upload',function(req,res){
+   cloudinary.uploader.upload(req.file.path,function(err,result){
+    if(err){
+        console.log(err);
+        return res.status(500).json({
+            success:false,
+            message:"Error"
+        })
+    }
 
-router.get('/getcart/:cart_id',async(req,res)=>{
-    const carts = await service.getcartById(req.params.cart_id)
-    ResponseManager.sendSuccess(res,carts)
+    res.status(200).json({
+        success:true,
+        message:"Uploaded",
+        data:"result"
+
    })
-
-//http://localhost:3000/api/carts/addcart/
-
-router.post('/addcart',async(req,res)=>{
-   const affectedRows = await service.addcart(req.body)
-if (affectedRows == 0) ResponseManager.statusError(404).json("no record id:" + req.params.id);
-else ResponseManager.sendSuccess(res,"created successful");
-
 })
-
-//http://localhost:3000/api/carts/removecart/
-
-router.post('/removecart',async(req,res)=>{
-   await service.removecart(req.body)
-  res.status(201).send('remove successfully')
 })
-
-//http://localhost:3000/api/carts/emptycart/
-
-router.post('/emptycart',async(req,res)=>{
-   await service.emptycart(req.body)
-  res.status(201).send('cart is empty')
-})
-module.exports = router;
+module.exports = router
