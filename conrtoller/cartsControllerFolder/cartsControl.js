@@ -15,9 +15,10 @@ router.get('/getcart/:cart_id',async(req,res)=>{
 //http://localhost:3000/api/carts/addcart/
 
 router.post('/addcart',async(req,res)=>{
-     await service.addcart(req.body)
-    ResponseManager.statusError(201)
-    ResponseManager.sendSuccess(res,'created successfully')
+   const affectedRows = await service.addcart(req.body)
+if (affectedRows == 0) ResponseManager.statusError(404).json("no record id:" + req.params.id);
+else ResponseManager.sendSuccess(res,"created successful");
+
 })
 
 //http://localhost:3000/api/carts/removecart/

@@ -12,6 +12,8 @@ salesRoutes = require('./conrtoller/salesControllerFolder/salesControl')
 purchaseRoutes = require ('./conrtoller/puchaseControllerFolder/purchaseControl')
 cartsRoutes = require('./conrtoller/cartsControllerFolder/cartsControl')
 orderhistoryRoutes = require('./conrtoller/orderhistoryControllerFolder/orderhistoryControl')
+loginRoutes = require('./Auth/login');
+uploadfileRouter= require('./multer/uploadfile')
 
 //middleware
 app.use(bodyparser.json())
@@ -23,6 +25,9 @@ app.use('/api/sales',salesRoutes)
 app.use('/api/purchase',purchaseRoutes)
 app.use('/api/carts',cartsRoutes)
 app.use('/api/orderhistory',orderhistoryRoutes)
+app.use('/login',loginRoutes);
+app.use('/uploadfile',uploadfileRouter)
+
 
 //Global handler
 app.all("*", (req, res) => {
