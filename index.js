@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const db = require('./db');
-const bodyparser = require("body-parser");
+const cors = require('cors')
 require('express-async-errors')
 const ResponseManager = require('./response/responseManager')
 bookRoutes = require('./conrtoller/booksControllerfolder/booksControl')
@@ -16,7 +16,8 @@ loginRoutes = require('./Auth/login');
 uploadfileRouter= require('./multer/uploadfile')
 
 //middleware
-app.use(bodyparser.json())
+app.use(express.json())
+app.use(cors())
 app.use('/api/books',bookRoutes)
 app.use('/api/clients',clientRoutes)
 app.use('/api/booktypes',booktypeRoutes)
@@ -33,15 +34,14 @@ app.use('/uploadfile',uploadfileRouter)
 app.all("*", (req, res) => {
   ResponseManager.sendError(res, 404, "", "Yes", "Page Not Found");
 });
-// app.use((err,res,req,next)=>{
-//    console.log(err)
-//    res.status[err.status || 500].send('something went wrong')
-// })
-
-db.query("SELECT 1")
-.then(()=>{
-  console.log('connected')
-  app.listen(3000,()=>console.log('Server started at 3000'));
+ app.use((err,res,req,next)=>{
+  res.status(500).json({
+    msg:err.msg,
 })
- .catch(err=>console.log('connection failed \n' +err))
+next(err)
+ }
+)
+app.listen(4000,()=>{
+  console.log('server running on 3000');
+})
 

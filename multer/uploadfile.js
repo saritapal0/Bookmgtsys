@@ -1,7 +1,7 @@
 const express = require('express');
 const multer  = require('multer');
 const router = express();
-
+const fileupload = require('../utils/cloudinary')
 
 // Configure Multer
 const storage = multer.diskStorage({
