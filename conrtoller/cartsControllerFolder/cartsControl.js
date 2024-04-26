@@ -1,25 +1,22 @@
 const express = require('express');
 const router = express.Router();
-const cloudinary = require('../../Cloud/cloudinary')
-const service = require("../../services/carts/carts_sevices")
+const cloudinary = require("../../Cloud/cloudinary");
 
-
-router.post('/upload',function(req,res){
-   cloudinary.uploader.upload(req.file.path,function(err,result){
-    if(err){
-        console.log(err);
-        return res.status(500).json({
-            success:false,
-            message:"Error"
-        })
+router.post('/upload', async (req, res) => {
+    try {
+      // Upload file to Cloudinary
+      const result = await cloudinary.upload_stream(req.file.originalname, (error, result) => {
+        if (error) {
+          console.error(error);
+          res.status(500).send('Error uploading file to Cloudinary.');
+        } else {
+          console.log('File uploaded successfully:', result.secure_url);
+          res.send('File uploaded successfully.');
+        }
+      }).end(req.file.buffer);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send('Error uploading file.');
     }
-
-    res.status(200).json({
-        success:true,
-        message:"Uploaded",
-        data:"result"
-
-   })
-})
-})
+  });
 module.exports = router
