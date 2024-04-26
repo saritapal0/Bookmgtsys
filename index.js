@@ -12,7 +12,7 @@ salesRoutes = require('./conrtoller/salesControllerFolder/salesControl')
 purchaseRoutes = require ('./conrtoller/puchaseControllerFolder/purchaseControl')
 orderhistoryRoutes = require('./conrtoller/orderhistoryControllerFolder/orderhistoryControl')
 loginRoutes = require('./Auth/login');
-uploadfileRouter= require('./conrtoller/cartsControllerFolder/cartsControl')
+uploadcartsRouter= require('./conrtoller/cartsControllerFolder/cartsControl')
 
 //middleware
 app.use(express.json())
@@ -25,7 +25,7 @@ app.use('/api/sales',salesRoutes)
 app.use('/api/purchase',purchaseRoutes)
 app.use('/api/orderhistory',orderhistoryRoutes)
 app.use('/login',loginRoutes);
-app.use('/uploadfile',uploadfileRouter)
+app.use('/cartsuploaded',uploadcartsRouter)
 
 
 //Global handler

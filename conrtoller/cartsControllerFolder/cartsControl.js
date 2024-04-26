@@ -1,22 +1,32 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const cloudinary = require("../../Cloud/cloudinary");
+const service = require("../../services/carts/carts_sevices");
+const ResponseManager = require("../../response/responseManager");
 
-router.post('/upload', async (req, res) => {
-    try {
-      // Upload file to Cloudinary
-      const result = await cloudinary.upload_stream(req.file.originalname, (error, result) => {
-        if (error) {
-          console.error(error);
-          res.status(500).send('Error uploading file to Cloudinary.');
-        } else {
-          console.log('File uploaded successfully:', result.secure_url);
-          res.send('File uploaded successfully.');
-        }
-      }).end(req.file.buffer);
-    } catch (error) {
-      console.error(error);
-      res.status(500).send('Error uploading file.');
-    }
-  });
-module.exports = router
+
+router.get("/", async (req, res) => {
+   const carts = await service.getcarts();
+  ResponseManager.sendSuccess(res,carts);
+  return;
+});
+
+router.post("/",async(req, res) => {
+   const carts = await service.addcart();
+   const affectedRows = await service.addcart(req.body)
+   if (affectedRows == 0) ResponseManager.statusError(404).json("no record id:" + req.params.id);
+   else ResponseManager.sendSuccess(res,carts);
+});
+
+router.put("/:cart_id", async (req, res) => {
+  const carts= await service.updatecart();
+  const affectedRows = await service.updatecart(req.body,req.params.cart_id);
+  if (affectedRows == 0) ResponseManager.statusError(404).json("no record id:" + req.params.id);
+  else ResponseManager.sendSuccess(res,carts);
+});
+
+router.delete("/:cart_id", async (req, res) => {
+  const affectedRows = await service.deletecart(req.params.cart_id);
+  if (affectedRows == 0) ResponseManager.statusError(404).json("no record id:" + req.params.id);
+  ResponseManager.sendSuccess(res,"delete successful");;
+});
+module.exports = router;
