@@ -18,7 +18,7 @@ const storage = multer.diskStorage({
 });
 
 // Initialize Multer with the defined storage
-const upload = multer({ storage: storage })
+const upload = multer({ storage: storage });
 
 router.get("/getcart", async (req, res) => {
   const carts = await service.getcart();
@@ -26,26 +26,26 @@ router.get("/getcart", async (req, res) => {
   return;
 });
 
-router.post("/addcart", upload.single('cart') ,async (req, res) => {
-  const uploader = async(path) =>await cloudinary.uploads(path,'cart')
-  if(req.method==='post'){
-    const files = req.files
-    for(const file of files){
-      const{path} = file
-      const newPath = await uploader(path)
-      urls.push(newPath)
-      fs.unlinkSync(path)
-  }
+router.post("/addcart", upload.single("cart"), async (req, res) => {
+  const uploader = async (path) => await cloudinary.uploads(path, "cart");
+  if (req.method === "post") {
+    const files = req.files;
+    for (const file of files) {
+      const { path } = file;
+      const newPath = await uploader(path);
+      urls.push(newPath);
+      fs.unlinkSync(path);
+    }
 
-  res.status(200).json({
-    msg:'cart uploaded successfully',
-    data:ulrs
-  })
-}else{
-  res.status(405).json({
-    err:'cart not uploaded successfully'
-  })
-}
+    res.status(200).json({
+      msg: "cart uploaded successfully",
+      data: ulrs,
+    });
+  } else {
+    res.status(405).json({
+      err:"cart not uploaded successfully"
+    });
+  }
 
   // const affectedRows = await service.addcart(req.body);
   // if (affectedRows == 0)
