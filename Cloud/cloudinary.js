@@ -7,7 +7,7 @@ cloudinary.config({
 });
 
 function uploadCart(res, req, next) {
-  uploadImage.single("cart")(res, req, (err) => {
+  uploadCart.single("cart")(res, req, (err) => {
     if (err) throw err;
     const cartFile = req.file;
     const { origanalname, mimetype, buffer } = cartFile;

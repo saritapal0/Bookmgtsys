@@ -1,9 +1,19 @@
 const express = require("express");
 const router = express.Router();
-const cloudinary = require('../../Cloud/cloudinary')
-const uploadfile = require('../../multer/multer')
 const service = require("../../services/carts/carts_sevices");
 const ResponseManager = require("../../response/responseManager");
+ const multer = require('multer');
+//const cloudinary = require('../../Cloud/cloudinary');
+
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+  }
+});
+
+// Initialize Multer with the defined storage
+const upload = multer({ storage: storage });
+
 
 
 router.get("/getcart", async (req, res) => {
@@ -12,7 +22,7 @@ router.get("/getcart", async (req, res) => {
   return;
 });
 
-router.post("/addcart",async(req, res) => {
+router.post("/addcart",upload.single('file'),async(req, res) => {
   const affectedRows = await service.addcart(req.body)
  if (affectedRows == 0) ResponseManager.statusError(404).json("no record id:" + req.params.id);
  else ResponseManager.sendSuccess(res,"added successful");
