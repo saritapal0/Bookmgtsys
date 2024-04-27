@@ -3,7 +3,8 @@ const app = express();
 const db = require('./db');
 const cors = require('cors')
 require('express-async-errors')
-const ResponseManager = require('./response/responseManager')
+const ResponseManager = require('./response/responseManager');
+const bodyParser = require("body-parser");
 bookRoutes = require('./conrtoller/booksControllerfolder/booksControl')
 clientRoutes = require('./conrtoller/clientsControllerFolder/clientsControl')
 booktypeRoutes = require('./conrtoller/booktypesControllerFolder/booktypesControl')
@@ -15,6 +16,7 @@ loginRoutes = require('./Auth/login');
 uploadcartsRouter= require('./conrtoller/cartsControllerFolder/cartsControl')
 
 //middleware
+app.use(bodyParser.urlencoded({extended:false}))
 app.use(express.json())
 app.use(cors())
 app.use('/api/books',bookRoutes)

@@ -1,4 +1,5 @@
 const cloudinary = require("cloudinary").v2;
+const dotenv = require('dotenv')
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -6,30 +7,17 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-function uploadCart(res, req, next) {
-  uploadCart.single("cart")(res, req, (err) => {
-    if (err) throw err;
-    const cartFile = req.file;
-    const { origanalname, mimetype, buffer } = cartFile;
-
-    cloudinary.uploader;
-    Upload_Stream((err, result) => {
-      if (err) throw err;
-      const { public_id } = result;
-      const  url = cloudinary.url(public_id,{
-        width:150,
-        height:100,
-        crop:'fill'
+exports.uploads = (file,folder) => {
+  return new Promise(resolve =>{
+    cloudinary.uploader.upload(file,(result)=>{
+      resolve({
+        url:result.url,
+        id:result.public_id
       })
-      const data = {
-        name: origanalname,
-        type: mimetype,
-        url: url,
-        public_id: public_id,
-      };
+    },{
+      resource_type:"auto",
+      folder:folder
     })
-     .end(buffer)
-  });
+  }) 
 }
-
 module.exports = cloudinary;
