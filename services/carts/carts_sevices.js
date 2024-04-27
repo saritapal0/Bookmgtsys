@@ -1,7 +1,7 @@
 const db = require('../../db')
 
 
-module.exports.getcarts=async()=> {
+module.exports.getcart=async()=> {
     const [rows] = await db.query('SELECT * FROM carts')
     return rows;
 }
