@@ -1,23 +1,17 @@
-const cloudinary = require("cloudinary").v2;
+const cloudinary = require("../Cloud/upload");
 
-
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
-
-exports.uploads = (file,folder) => {
-  return new Promise(resolve =>{
-    cloudinary.uploader.upload(file,(result)=>{
-      resolve({
-        url:result.url,
-        id:result.public_id
+module.exports.uploadMedia = (fileBuffer) => {
+  return new Promise((resolve, reject) => {
+    cloudinary.uploader
+      .upload_stream({ resource_type: "image" }, async (err, result) => {
+        if (err) {
+          console.error(err);
+          reject("uploading fail");
+        } else {
+          const imageUrl = result.secure_url;
+          resolve(imageUrl);
+        }
       })
-    },{
-      resource_type:"auto",
-      folder:folder
-    })
-  }) 
-}
-module.exports = cloudinary;
+      .end(fileBuffer);
+  });
+};

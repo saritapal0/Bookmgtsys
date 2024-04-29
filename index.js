@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
-const db = require('./db');
+const dotenv = require('dotenv')
+dotenv.config();
 const cors = require('cors')
 require('express-async-errors')
 const ResponseManager = require('./response/responseManager');

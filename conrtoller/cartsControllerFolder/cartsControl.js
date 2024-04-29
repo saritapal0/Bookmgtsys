@@ -2,23 +2,12 @@ const express = require("express");
 const router = express.Router();
 const service = require("../../services/carts/carts_sevices");
 const ResponseManager = require("../../response/responseManager");
-const multer = require("multer");
-const path = require("path");
-const cloudinary = require("../../Cloud/cloudinary");
-const fs = require("fs");
+const multer = require("multer")
+const fileuploader = require("../../Cloud/cloudinary");
+const { image } = require("../../Cloud/upload");
+const storage = multer.memoryStorage();
+const upload = multer({storage:storage});
 
-const storage = multer.diskStorage({
-  destination: "upload/cart",
-  filename: (req, file, cb) => {
-    return cb(
-      null,
-      `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`
-    );
-  },
-});
-
-// Initialize Multer with the defined storage
-const upload = multer({ storage: storage });
 
 router.get("/getcart", async (req, res) => {
   const carts = await service.getcart();
@@ -26,31 +15,15 @@ router.get("/getcart", async (req, res) => {
   return;
 });
 
-router.post("/addcart", upload.single("cart"), async (req, res) => {
-  const uploader = async (path) => await cloudinary.uploads(path, "cart");
-  if (req.method === "post") {
-    const files = req.files;
-    for (const file of files) {
-      const { path } = file;
-      const newPath = await uploader(path);
-      urls.push(newPath);
-      fs.unlinkSync(path);
-    }
+router.post("/addcart", upload.single("image"), async (req, res) => {
+  const fileBuffer = req.file.buffer;
+  const formData = req.body;
 
-    res.status(200).json({
-      msg: "cart uploaded successfully",
-      data: ulrs,
-    });
-  } else {
-    res.status(405).json({
-      err:"cart not uploaded successfully"
-    });
-  }
-
-  // const affectedRows = await service.addcart(req.body);
-  // if (affectedRows == 0)
-  //   ResponseManager.statusError(404).json("no record id:" + req.params.id);
-  // else ResponseManager.sendSuccess(res, "added successful");
+  fileuploader.uploadMedia(fileBuffer).then((imageUrl)=>{
+    const newCartData = {...formData,image:imageUrl};
+    return service.addcart(newCartData)
+  }).then((Data)=>ResponseManager.sendSuccess(res,Data))
+  .catch((err)=>ResponseManager.sendError(res,err.message))
 });
 
 router.put("/updatecart/:cart_id", async (req, res) => {
@@ -67,3 +40,5 @@ router.delete("/deletecart/:cart_id", async (req, res) => {
   ResponseManager.sendSuccess(res, "delete successful");
 });
 module.exports = router;
+
+
